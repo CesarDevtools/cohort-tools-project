@@ -1,10 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-const cohortsData = require("./cohorts.json");
-const studentsData = require("./students.json");
+
 const PORT = 5005;
 const cors = require("cors");
+const mongoose = require("mongoose");
+const Project = require("./models/projects.model");
+const Student = require("./models/students.model");
 
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
@@ -34,15 +36,36 @@ app.get("/docs", (req, res) => {
 	res.sendFile(__dirname + "/views/docs.html");
 });
 
-app.get("/api/cohorts", (req, res) => {
-	res.json(cohortsData);
+app.get("/projects", (req, res) => {
+	Project.find({})
+		.then((books) => {
+			console.log("Retrieved books ->", books);
+			res.json(books);
+		})
+		.catch((error) => {
+			console.error("Error while retrieving books ->", error);
+			res.status(500).json({ error: "Failed to retrieve books" });
+		});
 });
 
-app.get("/api/students", (req, res) => {
-	res.json(studentsData);
+app.get("/students", (req, res) => {
+	Student.find({})
+		.then((books) => {
+			console.log("Retrieved books ->", books);
+			res.json(books);
+		})
+		.catch((error) => {
+			console.error("Error while retrieving books ->", error);
+			res.status(500).json({ error: "Failed to retrieve books" });
+		});
 });
 
 // START SERVER
 app.listen(PORT, () => {
 	console.log(`Server listening on port ${PORT}`);
 });
+
+mongoose
+	.connect("mongodb://127.0.0.1:27017/cohorts")
+	.then((x) => console.log(`Connected to Database: "${x.connections[0].name}"`))
+	.catch((err) => console.error("Error connecting to MongoDB", err));
