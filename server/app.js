@@ -99,6 +99,21 @@ app.put("/projects/:projectId", (req, res) => {
 })
 
 
+app.delete("/projects/:projectId", (req, res) => {
+
+	const { projectId } = req.params;
+
+	Project.findByIdAndDelete(projectId)
+		.then((project) => {
+			res.status(200).json(project)
+		})
+		.catch((err) => {
+			console.error("Error deleting the project \n\n", err);
+			res.status(500).json({error: "Failed to delete project"})
+		})
+
+})
+
 /********************/
 /***STUDENTS ROUTES**/
 /********************/
