@@ -185,6 +185,21 @@ app.put("/students/:studentId", (req, res) => {
     });
 });
 
+app.delete("/students/:studentId", (req, res) => {
+
+	const {studentId } = req.params
+
+	Student.findByIdAndDelete(studentId)
+		.then((student) => {
+			console.log("Success deleting student \n\n", student);
+      		res.status(200).json(student);
+		})
+		.catch((error) => {
+			console.error("Error deleting student \n\n", error);
+      		res.status(500).json(error);
+		})
+})
+
 // START SERVER
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
