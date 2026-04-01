@@ -123,8 +123,8 @@ app.get("/students", (req, res) => {
   Student.find({})
     .populate("projects")
     .then((students) => {
-      console.log("Retrieved books ->", students);
-      res.json(students);
+      console.log("Retrieved students -> \n\n", students);
+      res.status(200).json(students);
     })
     .catch((error) => {
       console.error("Error while retrieving books ->", error);
@@ -132,9 +132,25 @@ app.get("/students", (req, res) => {
     });
 });
 
+app.get("/students/:studentId", (req, res) => {
+
+	const {studentId} = req.params
+
+	Student.findById(studentId)
+		.populate("projects")
+		.then((student) => {
+			console.log("Success, student retrived \n\n" , student)
+			res.status(200).json(student)
+		})
+		.catch(() => {
+			console.error("Error while retrieving the student \n\n", err);
+      		res.status(500).json({ error: "failed to retrieve student" });
+		})
+})
+
 // START SERVER
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);	
 });
 
 mongoose
