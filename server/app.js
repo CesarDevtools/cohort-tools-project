@@ -133,7 +133,6 @@ app.get("/students", (req, res) => {
 });
 
 app.get("/students/:studentId", (req, res) => {
-
 	const {studentId} = req.params
 
 	Student.findById(studentId)
@@ -145,6 +144,22 @@ app.get("/students/:studentId", (req, res) => {
 		.catch(() => {
 			console.error("Error while retrieving the student \n\n", err);
       		res.status(500).json({ error: "failed to retrieve student" });
+		})
+})
+
+app.get("/students/project/:projectId", (req, res) => {
+	const {projectId} = req.params
+	const query = { projects: projectId };
+
+	Student.find(query)
+		.populate("projects")
+		.then((students) => {
+			console.log("Success retriving students \n\n", students)
+			res.status(200).json(students)
+		})
+		.catch(() => {
+			console.error("Failed to retrive the students \n\n" , err)
+			res.status(500).json(err)
 		})
 })
 
