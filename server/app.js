@@ -38,9 +38,9 @@ app.get("/docs", (req, res) => {
 
 app.get("/projects", (req, res) => {
 	Project.find({})
-		.then((books) => {
-			console.log("Retrieved books ->", books);
-			res.json(books);
+		.then((projects) => {
+			console.log("Retrieved books ->", projects);
+			res.json(projects);
 		})
 		.catch((error) => {
 			console.error("Error while retrieving books ->", error);
@@ -50,9 +50,9 @@ app.get("/projects", (req, res) => {
 
 app.get("/students", (req, res) => {
 	Student.find({})
-		.then((books) => {
-			console.log("Retrieved books ->", books);
-			res.json(books);
+		.then((students) => {
+			console.log("Retrieved books ->", students);
+			res.json(students);
 		})
 		.catch((error) => {
 			console.error("Error while retrieving books ->", error);
