@@ -2,8 +2,15 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const projectSchema = new Schema({
-	_id: Number,
-	inProgress: Boolean,
+	_id: {
+		type: Number,
+		required: true,
+		unique: true,
+	},
+	inProgress: {
+		type: Boolean,
+		default: false,
+	},
 	cohortSlug: String,
 	cohortName: String,
 	program: String,
