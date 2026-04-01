@@ -82,6 +82,22 @@ app.post("/projects", (req, res) => {
 		})
 })
 
+app.put("/projects/:projectId", (req, res) => {
+
+	const {projectId} = req.params
+	const update = req.body
+
+	Project.findByIdAndUpdate(projectId, update, {new: true})
+		.then((project) => {
+			console.log("Success upadating the project \n\n", project)
+			res.status(200).json(project)
+		})
+		.catch((err) => {
+			console.error("Error updating the project", err)
+			res.status(500).json(err)
+		})
+})
+
 
 /********************/
 /***STUDENTS ROUTES**/
