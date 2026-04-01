@@ -62,13 +62,25 @@ app.get("/projects/:projectId", (req, res) => {
       res.status(200).json(project);
     })
     .catch((err) => {
-      console.error("Error while retrieving the project /n/n", err);
+      console.error("Error while retrieving the project \n\n", err);
       res.status(500).json({ error: "failed to retrieve project" });
     });
 });
 
-app.get("/projects/:projectId", (req, res) => {});
+app.post("/projects", (req, res) => {
 
+	const newProject = req.body
+
+	Project.create(newProject)
+		.then((response) => {
+			console.log("Success creating the project", response)
+			res.status(200).json(response)
+		})
+		.catch((err) => {
+			console.error("Error creating the project \n\n", err)
+			res.status(500).json(err)
+		})
+})
 
 
 /********************/
