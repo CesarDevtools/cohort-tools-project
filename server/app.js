@@ -5,8 +5,6 @@ const cookieParser = require("cookie-parser");
 const PORT = 5005;
 const cors = require("cors");
 const mongoose = require("mongoose");
-const Project = require("./models/projects.model");
-const Student = require("./models/students.model");
 
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
@@ -24,188 +22,27 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
-  cors({
-    origin: ["http://localhost:5173"],
-  }),
+	cors({
+		origin: ["http://localhost:5173"],
+	}),
 );
 
 // ROUTES - https://expressjs.com/en/starter/basic-routing.html
 // Devs Team - Start working on the routes here:
 // ...
 app.get("/docs", (req, res) => {
-  res.sendFile(__dirname + "/views/docs.html");
+	res.sendFile(__dirname + "/views/docs.html");
 });
-
-/********************/
-/***PROJECTS ROUTES**/
-/********************/
-
-app.get("/projects", (req, res) => {
-  Project.find({})
-    .then((projects) => {
-      console.log("Retrieved projects");
-      res.status(200).json(projects);
-    })
-    .catch((error) => {
-      console.error("Error while retrieving projects ->", error);
-      res.status(500).json({ error: "Failed to retrieve projects" });
-    });
-});
-
-app.get("/projects/:projectId", (req, res) => {
-  const { projectId } = req.params;
-
-  Project.findById(projectId)
-    .then((project) => {
-      console.log("Project retrieved");
-      res.status(200).json(project);
-    })
-    .catch((err) => {
-      console.error("Error while retrieving the project \n\n", err);
-      res.status(500).json({ error: "failed to retrieve project" });
-    });
-});
-
-app.post("/projects", (req, res) => {
-  const newProject = req.body;
-
-  Project.create(newProject)
-    .then((response) => {
-      console.log("Success creating the project", response);
-      res.status(200).json(response);
-    })
-    .catch((err) => {
-      console.error("Error creating the project \n\n", err);
-      res.status(500).json(err);
-    });
-});
-
-app.put("/projects/:projectId", (req, res) => {
-  const { projectId } = req.params;
-  const update = req.body;
-
-  Project.findByIdAndUpdate(projectId, update, { new: true })
-    .then((project) => {
-      console.log("Success upadating the project \n\n", project);
-      res.status(200).json(project);
-    })
-    .catch((err) => {
-      console.error("Error updating the project", err);
-      res.status(500).json(err);
-    });
-});
-
-app.delete("/projects/:projectId", (req, res) => {
-  const { projectId } = req.params;
-
-  Project.findByIdAndDelete(projectId)
-    .then((project) => {
-      res.status(200).json(project);
-    })
-    .catch((err) => {
-      console.error("Error deleting the project \n\n", err);
-      res.status(500).json({ error: "Failed to delete project" });
-    });
-});
-
-/********************/
-/***STUDENTS ROUTES**/
-/********************/
-
-app.get("/students", (req, res) => {
-  Student.find({})
-    .populate("projects")
-    .then((students) => {
-      console.log("Retrieved students -> \n\n", students);
-      res.status(200).json(students);
-    })
-    .catch((error) => {
-      console.error("Error while retrieving books ->", error);
-      res.status(500).json({ error: "Failed to retrieve books" });
-    });
-});
-
-app.get("/students/:studentId", (req, res) => {
-  const { studentId } = req.params;
-
-  Student.findById(studentId)
-    .populate("projects")
-    .then((student) => {
-      console.log("Success, student retrived \n\n", student);
-      res.status(200).json(student);
-    })
-    .catch(() => {
-      console.error("Error while retrieving the student \n\n", err);
-      res.status(500).json({ error: "failed to retrieve student" });
-    });
-});
-
-app.get("/students/project/:projectId", (req, res) => {
-  const { projectId } = req.params;
-  const query = { projects: projectId };
-
-  Student.find(query)
-    .populate("projects")
-    .then((students) => {
-      console.log("Success retriving students \n\n", students);
-      res.status(200).json(students);
-    })
-    .catch(() => {
-      console.error("Failed to retrive the students \n\n", err);
-      res.status(500).json(err);
-    });
-});
-
-app.post("/students", (req, res) => {
-  const newStudent = req.body;
-
-  Student.create(newStudent)
-    .then((student) => {
-      console.log("Success creatign student \n\n", student);
-      res.status(201).json(student);
-    })
-    .catch((err) => {
-      console.error("Failed to create student \n\n", err);
-      res.status(500).json(err);
-    });
-});
-
-app.put("/students/:studentId", (req, res) => {
-  const { studentId } = req.params;
-  const update = req.body;
-
-  Student.findByIdAndUpdate(studentId, update, { new: true })
-    .then((student) => {
-      console.log("Success updating student \n\n", student);
-      res.status(200).json(student);
-    })
-    .catch((error) => {
-      console.error("Error updating student \n\n", error);
-      res.status(500).json(error);
-    });
-});
-
-app.delete("/students/:studentId", (req, res) => {
-
-	const {studentId } = req.params
-
-	Student.findByIdAndDelete(studentId)
-		.then((student) => {
-			console.log("Success deleting student \n\n", student);
-      		res.status(200).json(student);
-		})
-		.catch((error) => {
-			console.error("Error deleting student \n\n", error);
-      		res.status(500).json(error);
-		})
-})
+//Routes
+app.use("/", require("./routes/project.routes"));
+app.use("/", require("./routes/student.routes"));
 
 // START SERVER
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+	console.log(`Server listening on port ${PORT}`);
 });
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/cohorts")
-  .then((x) => console.log(`Connected to Database: "${x.connections[0].name}"`))
-  .catch((err) => console.error("Error connecting to MongoDB", err));
+	.connect("mongodb://127.0.0.1:27017/cohorts")
+	.then((x) => console.log(`Connected to Database: "${x.connections[0].name}"`))
+	.catch((err) => console.error("Error connecting to MongoDB", err));

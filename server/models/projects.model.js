@@ -11,6 +11,7 @@ const projectSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	format: String,
 	cohortSlug: String,
 	cohortName: String,
 	program: String,
