@@ -37,6 +37,13 @@ app.get("/docs", (req, res) => {
 app.use("/", require("./routes/project.routes"));
 app.use("/", require("./routes/student.routes"));
 
+
+/*Custom error handlers*/
+const { errorHandler, notFoundHandler } = require('./middleware/errorhandler');
+app.use(notFoundHandler);
+app.use(errorHandler);
+ 
+
 // START SERVER
 app.listen(PORT, () => {
 	console.log(`Server listening on port ${PORT}`);
