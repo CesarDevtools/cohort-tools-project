@@ -1,7 +1,8 @@
 const express = require("express");
+require("dotenv/config");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-
+const { isAuthenticated } = require("./middleware/jwt.middleware")
 const PORT = 5005;
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -34,9 +35,11 @@ app.get("/docs", (req, res) => {
 	res.sendFile(__dirname + "/views/docs.html");
 });
 //Routes
+app.use("/auth", require("./routes/auth.routes"));
+
+app.use(isAuthenticated) // Routes under this middleware require auth
 app.use("/", require("./routes/project.routes"));
 app.use("/", require("./routes/student.routes"));
-
 
 /*Custom error handlers*/
 const { errorHandler, notFoundHandler } = require('./middleware/errorhandler');
